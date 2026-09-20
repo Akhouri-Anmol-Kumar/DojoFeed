@@ -103,6 +103,7 @@ html[data-theme="dark"] .bolt{background:#26262b;border:1px solid var(--line2)}
 .av:hover{transform:scale(1.07);box-shadow:0 0 0 2px var(--card),0 0 0 3.5px var(--gold)}
 .av.big{width:92px;height:92px;font-size:26px;border-radius:24px}
 .av.md{width:42px;height:42px;font-size:13px;border-radius:13px}
+.av.xs{width:26px;height:26px;font-size:9px;border-radius:8px}
 .pop{position:absolute;top:calc(100% + 12px);right:0;width:260px;background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow),0 0 0 4px color-mix(in srgb,var(--gold) 8%,transparent);padding:16px;z-index:110;opacity:0;visibility:hidden;transform:translateY(-8px) scale(.94);transform-origin:top right;transition:opacity .28s var(--ease),transform .34s var(--snap),visibility .3s}
 .pop.open{opacity:1;visibility:visible;transform:translateY(0) scale(1)}
 .pop::before{content:"";position:absolute;top:-6px;right:34px;width:12px;height:12px;background:var(--card);border-left:1px solid var(--line);border-top:1px solid var(--line);transform:rotate(45deg)}
@@ -206,6 +207,18 @@ html[data-theme="dark"] .sec-k{color:var(--gold)}
 .act .n{transition:transform .3s var(--snap)}
 .act.pop .n{animation:numPop .45s var(--snap)}
 @keyframes numPop{40%{transform:scale(1.5);color:var(--gold)}}
+/* COMMENTS */
+.cmt-sec{display:none;margin-top:12px;border-top:1px dashed var(--line);padding-top:12px;animation:fadeUp .3s var(--ease)}
+.cmt-sec.open{display:block}
+.cmt{display:flex;gap:8px;margin-bottom:8px;align-items:flex-start}
+.cmt-b{background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:12.5px;flex:1;word-break:break-word}
+.cmt-b b{font-size:10.5px;display:block;font-family:var(--f-mono);color:var(--mut);margin-bottom:2px}
+.cmt-input{display:flex;gap:8px;margin-top:10px}
+.cmt-input input{flex:1;background:var(--bg2);border:1px solid var(--line);border-radius:99px;padding:9px 14px;font-size:13px;outline:none;transition:border-color .25s}
+.cmt-input input:focus{border-color:var(--gold)}
+.cmt-send{font-family:var(--f-mono);font-weight:700;font-size:11px;padding:8px 16px;border-radius:99px;color:#141310;background:linear-gradient(135deg,var(--gold-hi),var(--gold));transition:transform .25s var(--snap)}
+.cmt-send:hover{transform:translateY(-2px)}
+.cmt-send:active{transform:scale(.9)}
 .q-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
 .q-badge{font-family:var(--f-mono);font-size:10px;font-weight:700;letter-spacing:.15em;background:var(--gold);color:#141310;padding:4px 10px;border-radius:99px;animation:badgeGlow 2s ease infinite}
 @keyframes badgeGlow{0%,100%{box-shadow:0 0 0 0 rgba(201,162,39,.5)}50%{box-shadow:0 0 16px 2px rgba(201,162,39,.45)}}
@@ -510,9 +523,9 @@ footer::before{content:"DOJO";position:absolute;left:50%;top:50%;transform:trans
       <div class="card b-lb hov reveal" style="--rd:.22s">
         <span class="sec-k">🏆 Leaderboard · Top 5</span>
         <div class="lb-tabs">
-          <button class="lb-tab" data-act="rtab" data-tab="xp">⚡ XP</button>
+          <button class="lb-tab on gold" data-act="rtab" data-tab="xp">⚡ XP</button>
           <button class="lb-tab" data-act="rtab" data-tab="streak">🔥 Streak</button>
-          <button class="lb-tab on gold" data-act="rtab" data-tab="followers">★ Followers</button>
+          <button class="lb-tab" data-act="rtab" data-tab="followers">★ Followers</button>
         </div>
         <div id="railList"></div>
         <button class="lb-more" data-act="view" data-view="rankings">FULL RANKINGS →</button>
@@ -597,11 +610,10 @@ footer::before{content:"DOJO";position:absolute;left:50%;top:50%;transform:trans
 
 <script>
 "use strict";
-/* ══════════ SUPABASE (LIVE KEYS — anon key is public by design) ══════════
-   ⚠️ NEVER put sb_secret_... or the service_role JWT in this file or repo. */
+/* ═══════ SUPABASE (anon key is public by design; NEVER put service_role here) ═══════ */
 const SUPABASE_URL  = "https://klehljrrhcbymfdcahhy.supabase.co";
 const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtsZWhsanJyaGNieW1mZGNhaGh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgxMTY4ODQsImV4cCI6MjEwMzY5Mjg4NH0.eXLyO57lK2ELbFZlrwlpCfhFfwZN-lJ78C3-hSzuIfg";
-/* ═══════════════════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════════════════════════ */
 
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -618,15 +630,15 @@ try{
   }
 }catch(e){console.warn('Supabase init failed',e);}
 
-/* offline fallback DB */
 const DB_KEY='dojofeed.db.v2';
-function loadDB(){try{return JSON.parse(localStorage.getItem(DB_KEY))||{users:{},posts:[],follows:{},votes:{},saved:{},battleVotes:{}}}catch(e){return{users:{},posts:[],follows:{},votes:{},saved:{},battleVotes:{}}}}
+function loadDB(){try{const d=JSON.parse(localStorage.getItem(DB_KEY))||{};d.comments=d.comments||[];d.users=d.users||{};d.posts=d.posts||[];d.follows=d.follows||{};d.votes=d.votes||{};d.saved=d.saved||{};d.battleVotes=d.battleVotes||{};return d;}catch(e){return{users:{},posts:[],follows:{},votes:{},saved:{},battleVotes:{},comments:[]}}}
 function saveDB(){try{localStorage.setItem(DB_KEY,JSON.stringify(DB))}catch(e){}}
 let DB=loadDB();
 
-const state={me:null,view:'feed',editing:false,railTab:'followers',rankTab:'xp',
+const state={me:null,view:'feed',editing:false,railTab:'xp',rankTab:'xp',
   quests:{open:false,vote:false,app:false},claimed:false,voted:null,cTags:new Set(),
-  viewProfile:null,profilesCache:{},postsCache:[],_allVotes:[],_allFollows:[],_saved:new Set()};
+  viewProfile:null,profilesCache:{},postsCache:[],_allVotes:[],_allFollows:[],_saved:new Set(),
+  _comments:[],openComments:new Set()};
 
 const BELTS=[[0,'White','#e9e5d8'],[100,'Yellow','#e2c53b'],[300,'Orange','#e0862e'],[600,'Green','#4f9d55'],[1000,'Blue','#3b6ea5'],[1500,'Brown','#8a5a33'],[2200,'Black','#232323'],[3200,'Gold','#d4af37']];
 function beltInfo(xp){let i=0;for(let j=0;j<BELTS.length;j++)if(xp>=BELTS[j][0])i=j;
@@ -652,7 +664,6 @@ function toast(msg,xp,icon){
   el.innerHTML=`${icon?`<span>${icon}</span>`:''}<span>${esc(msg)}</span>${xp?`<span class="xp">+${xp} XP</span>`:''}`;
   $('#toasts').appendChild(el);setTimeout(()=>el.remove(),3100);}
 
-/* ═══════ AUTH ═══════ */
 function setAuthTab(tab){
   $$('.auth-tab').forEach(t=>t.classList.toggle('on',t.dataset.tab===tab));
   $('#form-signin').classList.toggle('hide',tab!=='signin');
@@ -661,11 +672,13 @@ function setAuthTab(tab){
 
 function friendlyErr(msg){
   const m=(msg||'').toLowerCase();
+  if(m.includes('failed to fetch'))return '⚠️ Cannot reach Supabase. Project paused? Wrong URL?';
   if(m.includes('already registered'))return 'That email is already registered. Try Sign In.';
   if(m.includes('invalid login'))return 'Wrong email or password.';
-  if(m.includes('email not confirmed'))return 'Email not confirmed yet. Check your inbox.';
+  if(m.includes('email not confirmed'))return 'Email not confirmed yet.';
   if(m.includes('duplicate key')||m.includes('unique'))return 'That username is taken.';
   if(m.includes('rate limit'))return 'Too many attempts. Wait a minute and retry.';
+  if(m.includes('permission denied'))return 'Database permissions missing — run the GRANT SQL in Supabase.';
   return msg||'Something went wrong.';}
 
 async function doSignUp(d){
@@ -725,13 +738,14 @@ async function loadMyProfile(user){
 
 async function refreshAll(){
   if(ONLINE){
-    const [pRes,poRes,vRes,fRes,bvRes,svRes]=await Promise.all([
+    const [pRes,poRes,vRes,fRes,bvRes,svRes,cRes]=await Promise.all([
       sb.from('profiles').select('*'),
       sb.from('posts').select('*').order('created_at',{ascending:false}).limit(100),
       sb.from('post_votes').select('*'),
       sb.from('follows').select('*'),
       sb.from('battle_votes').select('*').eq('day',today()),
       sb.from('saved').select('*').eq('user_id',state.me.id),
+      sb.from('comments').select('*').order('created_at',{ascending:true}).limit(500),
     ]);
     (pRes.data||[]).forEach(p=>state.profilesCache[p.id]=p);
     state.postsCache=poRes.data||[];
@@ -740,6 +754,7 @@ async function refreshAll(){
     const my=(bvRes.data||[]).find(v=>v.user_id===state.me.id);
     state.voted=my?my.side:null;
     state._saved=new Set((svRes.data||[]).map(s=>s.post_id));
+    state._comments=cRes.data||[];
   } else {
     state.profilesCache={...DB.users};
     state.postsCache=[...DB.posts].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
@@ -747,6 +762,7 @@ async function refreshAll(){
     state._allFollows=Object.keys(DB.follows).map(k=>{const[follower,followee]=k.split(':');return{follower,followee};});
     state.voted=DB.battleVotes[state.me.id]||null;
     state._saved=new Set(Object.keys(DB.saved).filter(k=>k.startsWith(state.me.id+':')).map(k=>k.split(':')[1]));
+    state._comments=DB.comments||[];
   }}
 
 function checkStreak(){
@@ -767,7 +783,7 @@ async function addXP(n){
   state.me.xp=(state.me.xp||0)+n;
   if(ONLINE)await sb.from('profiles').update({xp:state.me.xp}).eq('id',state.me.id);
   else{DB.users[state.me.id].xp=state.me.xp;saveDB();}
-  state.profilesCache[state.me.id]=state.me;
+  state.profilesCache[state.me.id]={...state.me};
   const after=beltInfo(state.me.xp);
   renderXP();
   if(after.name!==before)setTimeout(()=>toast(`Belt up! Now ${after.name} Belt`,null,'🥋'),450);
@@ -797,7 +813,6 @@ function renderXP(){
     <div class="bar"><i style="width:${b.p}%"></i></div>
     <div class="xp-line"><span>${b.name}</span>${b.next?`<span>Next: <b>${b.next}</b> · ${b.nextAt} XP</span>`:'<b>道 mastered</b>'}</div>`;}
 
-/* ═══════ QUESTS ═══════ */
 const QUESTS=[{k:'open',icon:'☀️',t:'Enter the Dojo',xp:10},{k:'vote',icon:'⚔️',t:'Vote in Tech Wars',xp:10},{k:'app',icon:'⚡',t:'Open the app',xp:5}];
 function completeQuest(k){
   if(!state.me||state.quests[k]||state.claimed)return;
@@ -817,7 +832,6 @@ function renderQuests(){
   else if(all){btn.disabled=false;btn.classList.add('ready');btn.textContent='CLAIM DAILY REWARD 🔥';}
   else{btn.disabled=true;btn.textContent='CLAIM DAILY REWARD';}}
 
-/* ═══════ TECH WARS ═══════ */
 const BATTLE={q:"What's your default editor in 2026?",a:{label:'VS Code'},b:{label:'Neovim'}};
 async function battleVotes(){
   if(ONLINE){
@@ -851,7 +865,6 @@ async function voteBattle(side){
   addXP(10);toast('Vote cast in Tech Wars',10,'⚔️');vib(15);
   completeQuest('vote');renderBattle();}
 
-/* ═══════ POSTS / SOCIAL ═══════ */
 function codeHTML(code){
   const h=esc(code).replace(/(fn|let|const|return|function|class|import|export|if|else|for|while|async|await)\b/g,'<span class="kw">$1</span>').replace(/(\/\/[^\n]*|\/\*[\s\S]*?\*\/)/g,'<span class="cm">$1</span>');
   return`<div class="p-code"><pre>${h}</pre></div>`;}
@@ -861,9 +874,22 @@ function isFollowing(other){return state._allFollows.some(f=>f.follower===state.
 function countFollowers(id){return state._allFollows.filter(f=>f.followee===id).length;}
 function countFollowing(id){return state._allFollows.filter(f=>f.follower===id).length;}
 function getProfile(id){return state.profilesCache[id]||null;}
+function commentsFor(pid){return state._comments.filter(c=>c.post_id===pid);}
 function timeAgo(ts){const d=typeof ts==='number'?ts:new Date(ts).getTime();const diff=Date.now()-d;
   if(diff<60000)return'now';if(diff<3600000)return Math.floor(diff/60000)+'m';
   if(diff<86400000)return Math.floor(diff/3600000)+'h';return Math.floor(diff/86400000)+'d';}
+
+function commentsHTML(pid){
+  const list=commentsFor(pid).map(c=>{
+    const cp=getProfile(c.author);
+    return`<div class="cmt">${avHTML(cp,'xs')}<div class="cmt-b"><b>@${esc(cp?cp.username:'ghost')} · ${timeAgo(c.created_at)}</b>${esc(c.text)}</div></div>`;
+  }).join('');
+  return`<div class="cmt-sec ${state.openComments.has(pid)?'open':''}" data-csec="${pid}">
+    ${list||`<p style="font-size:12px;color:var(--mut);margin-bottom:8px">No comments yet. Start the conversation.</p>`}
+    <div class="cmt-input">
+      <input placeholder="Add a comment…" maxlength="240" data-cin="${pid}">
+      <button class="cmt-send" data-act="sendcomment" data-id="${pid}">SEND</button>
+    </div></div>`;}
 
 function postHTML(p){
   const profile=getProfile(p.author);if(!profile)return'';
@@ -871,6 +897,7 @@ function postHTML(p){
   const isMe=state.me&&state.me.id===p.author;
   const fbtn=(!isMe&&state.me)?`<button class="fbtn sm ${isFollowing(p.author)?'on':''}" data-act="follow" data-id="${p.author}">${isFollowing(p.author)?'Following ✓':'Follow'}</button>`:'';
   const saved=state.me&&state._saved.has(p.id);
+  const cCount=commentsFor(p.id).length;
   return`<article class="card post hov">
     <div class="p-head">
       <span data-act="profile" data-id="${p.author}" style="cursor:pointer">${avHTML(profile,'md')}</span>
@@ -883,9 +910,11 @@ function postHTML(p){
     <div class="p-acts">
       <button class="act ${my===1?'voted':''}" data-act="up" data-id="${p.id}">⚡ <span class="n">${fmt(votes)}</span></button>
       <button class="act ${my===-1?'voted':''}" data-act="down" data-id="${p.id}">⬇</button>
-      <button class="act">💬 <span class="n">${p.comments||0}</span></button>
+      <button class="act ${state.openComments.has(p.id)?'voted':''}" data-act="comments" data-id="${p.id}">💬 <span class="n">${cCount}</span></button>
       <button class="act ${saved?'voted':''}" data-act="save" data-id="${p.id}" style="margin-left:auto">🔖</button>
-    </div></article>`;}
+    </div>
+    ${commentsHTML(p.id)}
+  </article>`;}
 
 function renderFeed(){
   if(!state.postsCache.length){
@@ -917,12 +946,12 @@ async function toggleFollow(otherId){
   vib(10);renderFeed();renderRail();renderRankings();
   if(state.view==='dojo')renderDojo(state.viewProfile||state.me.id);}
 
-/* ═══════ LEADERBOARD / RANKINGS ═══════ */
 function allUsersSorted(key){
   return Object.values(state.profilesCache).map(p=>{
     let val=0;
     if(key==='xp')val=p.xp||0;else if(key==='streak')val=p.streak||0;else val=countFollowers(p.id);
-    return{profile:p,val};}).sort((a,b)=>b.val-a.val);}
+    return{profile:p,val};})
+    .sort((a,b)=>(b.val-a.val)||((b.profile.xp||0)-(a.profile.xp||0))||((b.profile.streak||0)-(a.profile.streak||0))||String(a.profile.username).localeCompare(String(b.profile.username)));}
 function renderRail(){
   const key=state.railTab;
   $$('#view-feed .lb-tab').forEach(t=>{t.classList.toggle('on',t.dataset.tab===key);t.classList.toggle('gold',t.dataset.tab===key);});
@@ -963,7 +992,6 @@ function renderRankings(){
       <span class="m ${key==='followers'?'hot':''}">★ ${fmt(countFollowers(r.profile.id))}</span>${fbtn}</div>`;}).join('');
   $('#rankBody').innerHTML=`<div class="podium">${pod}</div><div class="rank-list">${rows}</div>`;}
 
-/* ═══════ PROFILE ═══════ */
 function renderDojo(uid){
   uid=uid||state.me?.id;if(!uid)return;
   state.viewProfile=uid;
@@ -1007,7 +1035,6 @@ function renderDojo(uid){
       </div>
     </div></div>`;}
 
-/* ═══════ COMPOSER ═══════ */
 const ALL_TAGS=['webdev','rust','css','showdev','ai','database','devops','career'];
 function renderComposerTags(){$('#cTags').innerHTML=ALL_TAGS.map(t=>`<button class="tag ${state.cTags.has(t)?'sel':''}" data-act="ctag" data-t="${t}">#${t}</button>`).join('');}
 async function makePost(){
@@ -1027,7 +1054,23 @@ async function makePost(){
   renderComposerTags();renderFeed();renderDojo(state.viewProfile);
   addXP(15);toast('Posted to the dojo',15,'⚡');vib(20);}
 
-/* ═══════ VIEWS / MOTION ═══════ */
+async function sendComment(pid){
+  if(!state.me)return;
+  const input=document.querySelector(`[data-cin="${pid}"]`);
+  if(!input)return;
+  const text=input.value.trim();
+  if(!text){toast('Write a comment first.',null,'💬');return;}
+  if(ONLINE){
+    const {data,error}=await sb.from('comments').insert({post_id:pid,author:state.me.id,text}).select('*').single();
+    if(error){toast('Comment failed: '+friendlyErr(error.message),null,'⚠️');return;}
+    state._comments.push(data);
+  }else{
+    const c={id:'c'+Date.now(),post_id:pid,author:state.me.id,text,created_at:Date.now()};
+    DB.comments.push(c);saveDB();state._comments.push(c);}
+  state.openComments.add(pid);
+  addXP(2);toast('Comment added',2,'💬');
+  renderFeed();renderDojo(state.viewProfile);}
+
 function go(view){
   state.view=view;
   $$('.view').forEach(v=>v.classList.remove('on'));
@@ -1065,13 +1108,17 @@ function closePops(){$$('.pop').forEach(p=>p.classList.remove('open'));}
   [chip,pop].forEach(el=>el.addEventListener('mouseleave',()=>{clearTimeout(popTimer);popTimer=setTimeout(closePops,220);}));
   chip.addEventListener('click',e=>{if(matchMedia('(hover:hover)').matches)return;e.stopPropagation();const o=pop.classList.contains('open');closePops();if(!o)openPop(pop.id);});});
 document.addEventListener('click',e=>{if(!e.target.closest('.chip-zone'))closePops();});
-addEventListener('keydown',e=>{if(e.key==='Escape'){closePops();$('#modal').classList.remove('open');}});
+addEventListener('keydown',e=>{
+  if(e.key==='Escape'){closePops();$('#modal').classList.remove('open');}
+  if(e.key==='Enter'&&e.target.matches&&e.target.matches('[data-cin]')){
+    const pid=e.target.dataset.cin;
+    const btn=document.querySelector(`[data-act="sendcomment"][data-id="${pid}"]`);
+    if(btn){e.preventDefault();btn.click();}}});
 
 function confetti(){
   const box=$('#confetti'),colors=['#d4af37','#e8cd6a','#8f6f14','#171512','#fff8e0'];
   for(let i=0;i<34;i++){const c=document.createElement('span');c.className='cf';c.style.left=Math.random()*100+'vw';c.style.setProperty('--c',colors[i%colors.length]);c.style.setProperty('--dx',(Math.random()*160-80)+'px');c.style.setProperty('--rot',(Math.random()*720-360)+'deg');c.style.setProperty('--t',(1+Math.random()*1.1)+'s');box.appendChild(c);setTimeout(()=>c.remove(),2300);}}
 
-/* ═══════ GLOBAL CLICKS ═══════ */
 document.addEventListener('click',e=>{
   const t=e.target.closest('[data-act]');if(!t)return;
   const{act,id}=t.dataset;vib(6);
@@ -1090,6 +1137,14 @@ document.addEventListener('click',e=>{
       $('#modal').classList.add('open');confetti();vib(30);break;
     case 'closemodal':$('#modal').classList.remove('open');break;
     case 'battle':voteBattle(t.dataset.side);break;
+    case 'comments':{
+      const sec=t.closest('.post').querySelector('.cmt-sec');
+      if(!sec)break;
+      const open=sec.classList.toggle('open');
+      if(open){state.openComments.add(id);const inp=sec.querySelector('input');if(inp)inp.focus();}
+      else state.openComments.delete(id);
+      t.classList.toggle('voted',open);break;}
+    case 'sendcomment':sendComment(id);break;
     case 'up':case 'down':{
       if(!state.me)break;
       const dir=act==='up'?1:-1;
@@ -1141,10 +1196,9 @@ document.addEventListener('click',e=>{
       toast('Profile updated.',null,'🥋');})();break;
     case 'avatar':$('#avFile').click();break;
     case 'follow':toggleFollow(id);break;
-    case 'signout':(async()=>{if(ONLINE)await sb.auth.signOut();localStorage.removeItem('dojofeed.session.v2');location.reload();})();break;
+    case 'signout':(async()=>{if(ONLINE)await sb.auth.signOut();location.reload();})();break;
   }});
 
-/* avatar: compress to 256px jpeg before upload (keeps DB rows small) */
 function compressImage(file){
   return new Promise((res,rej)=>{
     const url=URL.createObjectURL(file),img=new Image();
@@ -1217,7 +1271,6 @@ $('#form-signup').addEventListener('submit',async e=>{
   }catch(err){$('#err-signup').textContent=err.message;}
   finally{btn.disabled=false;}});
 
-/* ═══════ BOOT (failsafe: loader ALWAYS exits) ═══════ */
 (function init(){
   $('#lName').innerHTML=[...'DOJOFEED'].map((ch,i)=>`<b class="${i>3?'g':''}" style="--d:${.15+i*.05}s">${ch}</b>`).join('');
   $('#psWeek').innerHTML=Array.from({length:7},(_,i)=>`<i class="${i<6?'hit':''} ${i===6?'now':''}"></i>`).join('');
