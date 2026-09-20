@@ -12,12 +12,15 @@
 <style>
 :root{--gold:#c9a227;--gold-hi:#e8cd6a;--gold-deep:#8f6f14;--ember:#e05a2b;--bg:#f4f1e7;--bg2:#ebe7d9;--card:#fffdf6;--ink:#171512;--mut:#6f695b;--line:#e1dac6;--line2:#cfc5a9;--code:#141310;--shadow:0 10px 30px rgba(60,50,20,.10);--f-disp:'Unbounded',system-ui,sans-serif;--f-body:'Sora',system-ui,sans-serif;--f-mono:'JetBrains Mono',monospace;--ease:cubic-bezier(.22,.75,.25,1);--snap:cubic-bezier(.34,1.45,.5,1);--hh:64px}
 html[data-theme="dark"]{--bg:#0f0f11;--bg2:#141417;--card:#191a1d;--ink:#f2eee1;--mut:#9a9484;--line:#28282d;--line2:#3a3a41;--shadow:0 12px 32px rgba(0,0,0,.45)}
-*{margin:0;padding:0;box-sizing:border-box}html,body{overflow-x:hidden}
-body{font-family:var(--f-body);background:var(--bg);color:var(--ink);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;transition:background .4s,color .4s;overscroll-behavior-y:none}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{overflow-x:hidden;-webkit-text-size-adjust:100%}
+body{font-family:var(--f-body);background:var(--bg);color:var(--ink);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;transition:background .4s,color .4s;overscroll-behavior-y:contain;touch-action:manipulation}
 ::selection{background:var(--gold);color:#141310}
-button{font-family:inherit;color:inherit;background:none;border:none;cursor:pointer}
-input,textarea,select{font-family:inherit;color:inherit}img{display:block;max-width:100%}
-::-webkit-scrollbar{width:10px}::-webkit-scrollbar-track{background:var(--bg)}
+button{font-family:inherit;color:inherit;background:none;border:none;cursor:pointer;touch-action:manipulation}
+input,textarea,select{font-family:inherit;color:inherit;touch-action:manipulation}
+img{display:block;max-width:100%}
+::-webkit-scrollbar{width:10px}
+::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:var(--line2);border-radius:99px;border:2px solid var(--bg)}
 ::-webkit-scrollbar-thumb:hover{background:var(--gold)}
 #grain{position:fixed;inset:0;pointer-events:none;z-index:3;opacity:.5;mix-blend-mode:multiply;background-image:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope=".05"/></feComponentTransfer></filter><rect width="120" height="120" filter="url(%23n)"/></svg>')}
@@ -59,7 +62,7 @@ html[data-theme="dark"] .auth-bolt{background:#26262b;border:1px solid var(--lin
 .auth-form.hide{display:none}
 .fld{display:flex;flex-direction:column;gap:5px}
 .fld label{font-family:var(--f-mono);font-size:10px;letter-spacing:.22em;color:var(--mut);text-transform:uppercase}
-.fld input,.fld select,.fld textarea{background:var(--bg2);border:1px solid var(--line);border-radius:11px;padding:12px 14px;font-size:14px;outline:none;transition:border-color .25s}
+.fld input,.fld select,.fld textarea{background:var(--bg2);border:1px solid var(--line);border-radius:11px;padding:12px 14px;font-size:16px;outline:none;transition:border-color .25s}
 .fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px color-mix(in srgb,var(--gold) 15%,transparent)}
 .fld textarea{resize:vertical;min-height:60px}
 .fld-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -156,7 +159,7 @@ html[data-theme="dark"] .sec-k{color:var(--gold)}
 .pill.gold{background:var(--gold);border-color:var(--gold);color:#141310;box-shadow:0 4px 14px rgba(201,162,39,.35)}
 .composer{display:flex;gap:12px}
 .c-main{flex:1;min-width:0}
-.c-input{width:100%;border:none;outline:none;background:transparent;font-size:15px;font-weight:500;resize:none;min-height:26px;max-height:160px;padding-top:8px}
+.c-input{width:100%;border:none;outline:none;background:transparent;font-size:16px;font-weight:500;resize:none;min-height:26px;max-height:160px;padding-top:8px}
 .c-input::placeholder{color:var(--mut)}
 .c-code{display:none;margin-top:10px}
 .composer.code-on .c-code{display:block;animation:fadeUp .35s var(--ease)}
@@ -207,14 +210,13 @@ html[data-theme="dark"] .sec-k{color:var(--gold)}
 .act .n{transition:transform .3s var(--snap)}
 .act.pop .n{animation:numPop .45s var(--snap)}
 @keyframes numPop{40%{transform:scale(1.5);color:var(--gold)}}
-/* COMMENTS */
 .cmt-sec{display:none;margin-top:12px;border-top:1px dashed var(--line);padding-top:12px;animation:fadeUp .3s var(--ease)}
 .cmt-sec.open{display:block}
 .cmt{display:flex;gap:8px;margin-bottom:8px;align-items:flex-start}
 .cmt-b{background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:12.5px;flex:1;word-break:break-word}
 .cmt-b b{font-size:10.5px;display:block;font-family:var(--f-mono);color:var(--mut);margin-bottom:2px}
-.cmt-input{display:flex;gap:8px;margin-top:10px}
-.cmt-input input{flex:1;background:var(--bg2);border:1px solid var(--line);border-radius:99px;padding:9px 14px;font-size:13px;outline:none;transition:border-color .25s}
+.cmt-input{display:flex;gap:8px;margin-top:10px;position:relative;z-index:10}
+.cmt-input input{flex:1;background:var(--bg2);border:1px solid var(--line);border-radius:99px;padding:9px 14px;font-size:16px;outline:none;transition:border-color .25s}
 .cmt-input input:focus{border-color:var(--gold)}
 .cmt-send{font-family:var(--f-mono);font-weight:700;font-size:11px;padding:8px 16px;border-radius:99px;color:#141310;background:linear-gradient(135deg,var(--gold-hi),var(--gold));transition:transform .25s var(--snap)}
 .cmt-send:hover{transform:translateY(-2px)}
@@ -347,7 +349,7 @@ body.ready #bnav{transform:translateX(-50%) translateY(0)}
 .bn.on{background:var(--gold);color:#141310;font-weight:700}
 .bn.on i{transform:translateY(-1px)}
 @media(min-width:901px){#bnav{display:none}}
-@media(max-width:900px){#nav-top{display:none}main{padding-bottom:110px}.wordmark{font-size:14px}}
+@media(max-width:900px){#nav-top{display:none}main{padding-bottom:calc(110px + env(safe-area-inset-bottom))}.wordmark{font-size:14px}.b-feed{padding-bottom:20px}}
 @media(max-width:430px){.chip{padding:6px 9px;font-size:11px}.bn{padding:8px 13px}}
 footer{position:relative;z-index:1;background:#12110e;color:#e8e2cf;margin-top:50px;border-top:2px solid var(--gold);overflow:hidden}
 footer::before{content:"DOJO";position:absolute;left:50%;top:50%;transform:translate(-50%,-52%);font-family:var(--f-disp);font-weight:900;font-size:clamp(80px,16vw,190px);letter-spacing:.1em;color:rgba(212,175,55,.05);pointer-events:none;white-space:nowrap}
@@ -610,10 +612,8 @@ footer::before{content:"DOJO";position:absolute;left:50%;top:50%;transform:trans
 
 <script>
 "use strict";
-/* ═══════ SUPABASE (anon key is public by design; NEVER put service_role here) ═══════ */
 const SUPABASE_URL  = "https://klehljrrhcbymfdcahhy.supabase.co";
 const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtsZWhsanJyaGNieW1mZGNhaGh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgxMTY4ODQsImV4cCI6MjEwMzY5Mjg4NH0.eXLyO57lK2ELbFZlrwlpCfhFfwZN-lJ78C3-hSzuIfg";
-/* ═══════════════════════════════════════════════════════════════════════════════════ */
 
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -635,8 +635,42 @@ function loadDB(){try{const d=JSON.parse(localStorage.getItem(DB_KEY))||{};d.com
 function saveDB(){try{localStorage.setItem(DB_KEY,JSON.stringify(DB))}catch(e){}}
 let DB=loadDB();
 
+const CLAIM_KEY='dojofeed.claim.v1';
+function getDailyClaim(){
+  try{
+    const data=JSON.parse(localStorage.getItem(CLAIM_KEY))||{};
+    const t=today();
+    return data[t]||{open:false,vote:false,app:false,claimed:false};
+  }catch(e){return{open:false,vote:false,app:false,claimed:false};}
+}
+function setDailyClaim(data){
+  try{
+    const all=JSON.parse(localStorage.getItem(CLAIM_KEY))||{};
+    all[today()]=data;
+    localStorage.setItem(CLAIM_KEY,JSON.stringify(all));
+  }catch(e){}
+}
+
+const XP_LIMITS_KEY='dojofeed.xplimits.v1';
+function getXPLimits(){
+  try{
+    const data=JSON.parse(localStorage.getItem(XP_LIMITS_KEY))||{};
+    const t=today();
+    return data[t]||{posts:0,comments:0};
+  }catch(e){return{posts:0,comments:0};}
+}
+function setXPLimits(data){
+  try{
+    const all=JSON.parse(localStorage.getItem(XP_LIMITS_KEY))||{};
+    all[today()]=data;
+    localStorage.setItem(XP_LIMITS_KEY,JSON.stringify(all));
+  }catch(e){}
+}
+
+const dailyClaim=getDailyClaim();
 const state={me:null,view:'feed',editing:false,railTab:'xp',rankTab:'xp',
-  quests:{open:false,vote:false,app:false},claimed:false,voted:null,cTags:new Set(),
+  quests:{open:dailyClaim.open,vote:dailyClaim.vote,app:dailyClaim.app},
+  claimed:dailyClaim.claimed,voted:null,cTags:new Set(),
   viewProfile:null,profilesCache:{},postsCache:[],_allVotes:[],_allFollows:[],_saved:new Set(),
   _comments:[],openComments:new Set()};
 
@@ -777,10 +811,20 @@ function checkStreak(){
     else{Object.assign(DB.users[state.me.id],{streak:state.me.streak,best_streak:state.me.best_streak,last_active:t});saveDB();}
   }}
 
-async function addXP(n){
+async function addXP(n,source='action'){
   if(!state.me)return;
+  
+  const limits=getXPLimits();
+  if(source==='post'&&limits.posts>=3){toast('Daily post XP limit reached (3/day)',null,'⚠️');return;}
+  if(source==='comment'&&limits.comments>=10){toast('Daily comment XP limit reached (10/day)',null,'⚠️');return;}
+  
   const before=beltInfo(state.me.xp||0).name;
   state.me.xp=(state.me.xp||0)+n;
+  
+  if(source==='post')limits.posts++;
+  if(source==='comment')limits.comments++;
+  setXPLimits(limits);
+  
   if(ONLINE)await sb.from('profiles').update({xp:state.me.xp}).eq('id',state.me.id);
   else{DB.users[state.me.id].xp=state.me.xp;saveDB();}
   state.profilesCache[state.me.id]={...state.me};
@@ -817,6 +861,7 @@ const QUESTS=[{k:'open',icon:'☀️',t:'Enter the Dojo',xp:10},{k:'vote',icon:'
 function completeQuest(k){
   if(!state.me||state.quests[k]||state.claimed)return;
   state.quests[k]=true;
+  setDailyClaim({open:state.quests.open,vote:state.quests.vote,app:state.quests.app,claimed:state.claimed});
   const q=QUESTS.find(q=>q.k===k);
   addXP(q.xp);toast(q.t,q.xp,q.icon);vib(12);renderQuests();}
 function renderQuests(){
@@ -859,7 +904,11 @@ async function renderBattle(){
   $('#pastBattles').innerHTML=`<div class="empty"><span class="empty-ic">🕰️</span><b>No past battles yet</b><p>The first one ends tomorrow.</p></div>`;}
 async function voteBattle(side){
   if(state.voted||!state.me)return;
+  const claimData=getDailyClaim();
+  if(claimData.vote){toast('Already voted today — come back tomorrow',null,'⚠️');return;}
   state.voted=side;
+  claimData.vote=true;
+  setDailyClaim(claimData);
   if(ONLINE)await sb.from('battle_votes').upsert({day:today(),user_id:state.me.id,side},{onConflict:'day,user_id'});
   else{DB.battleVotes[state.me.id]=side;saveDB();}
   addXP(10);toast('Vote cast in Tech Wars',10,'⚔️');vib(15);
@@ -1052,7 +1101,7 @@ async function makePost(){
   $('#cText').value='';$('#cCode').value='';state.cTags.clear();
   $('#composer').classList.remove('code-on');$('#btnCode').classList.remove('on');
   renderComposerTags();renderFeed();renderDojo(state.viewProfile);
-  addXP(15);toast('Posted to the dojo',15,'⚡');vib(20);}
+  addXP(15,'post');toast('Posted to the dojo',15,'⚡');vib(20);}
 
 async function sendComment(pid){
   if(!state.me)return;
@@ -1068,7 +1117,7 @@ async function sendComment(pid){
     const c={id:'c'+Date.now(),post_id:pid,author:state.me.id,text,created_at:Date.now()};
     DB.comments.push(c);saveDB();state._comments.push(c);}
   state.openComments.add(pid);
-  addXP(2);toast('Comment added',2,'💬');
+  addXP(2,'comment');toast('Comment added',2,'💬');
   renderFeed();renderDojo(state.viewProfile);}
 
 function go(view){
@@ -1089,13 +1138,19 @@ function observeReveals(){$$('.reveal:not(.in)').forEach(el=>io.observe(el));}
 
 let targetY=scrollY,curY=scrollY,lastAuto=-1,vel=0;
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
-const canSmooth=matchMedia('(pointer:fine)').matches&&!reduced;
+const isMobile=matchMedia('(max-width: 900px), (pointer: coarse)').matches;
+const canSmooth=matchMedia('(pointer:fine)').matches&&!reduced&&!isMobile;
 const skewEl=$('#skew');
 const docH=()=>document.documentElement.scrollHeight-innerHeight;
+
 if(canSmooth){
   addEventListener('wheel',e=>{if(e.ctrlKey)return;if(Math.abs(e.deltaX)>Math.abs(e.deltaY))return;e.preventDefault();const mult=e.deltaMode===1?16:1;targetY=clamp(targetY+e.deltaY*mult*1.12,0,docH());},{passive:false});
   addEventListener('scroll',()=>{const y=scrollY;if(Math.abs(y-lastAuto)>2){targetY=curY=y;}},{passive:true});
-  (function loop(){const diff=targetY-curY;if(Math.abs(diff)>.5){curY+=diff*.115;lastAuto=Math.round(curY);scrollTo(0,curY);}else curY=targetY;vel+=(diff*.055-vel)*.14;skewEl.style.transform=`skewY(${clamp(vel*.028,-.75,.75)}deg)`;requestAnimationFrame(loop);})();}
+  (function loop(){const diff=targetY-curY;if(Math.abs(diff)>.5){curY+=diff*.115;lastAuto=Math.round(curY);scrollTo(0,curY);}else curY=targetY;vel+=(diff*.055-vel)*.14;skewEl.style.transform=`skewY(${clamp(vel*.028,-.75,.75)}deg)`;requestAnimationFrame(loop);})();
+} else {
+  skewEl.style.transform='none';
+}
+
 addEventListener('scroll',()=>{const y=scrollY,max=docH();$('#scrollbar').style.width=(max?y/max*100:0)+'%';$('#topbar').classList.toggle('scrolled',y>12);$('#kanji').style.setProperty('--ky',y*.12);},{passive:true});
 addEventListener('resize',()=>{targetY=clamp(targetY,0,docH());});
 
@@ -1133,7 +1188,9 @@ document.addEventListener('click',e=>{
     case 'quest':completeQuest(t.dataset.k);break;
     case 'claim':
       if(!QUESTS.every(q=>state.quests[q.k])||state.claimed)return;
-      state.claimed=true;addXP(25);renderQuests();
+      state.claimed=true;
+      setDailyClaim({open:state.quests.open,vote:state.quests.vote,app:state.quests.app,claimed:true});
+      addXP(25);renderQuests();
       $('#modal').classList.add('open');confetti();vib(30);break;
     case 'closemodal':$('#modal').classList.remove('open');break;
     case 'battle':voteBattle(t.dataset.side);break;
